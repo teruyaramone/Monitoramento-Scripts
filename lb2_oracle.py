@@ -1,0 +1,117 @@
+#!/usr/bin/python
+# coding=utf-8
+# -------------------------------------------------------------
+#                 Scripts de Monitoramento do Oracle Database
+#
+#       Autor: Bernardo S E Vale
+#       Data Inicio:  29/09/2015
+#       Data Release: 29/09/2015
+#       email: bernardo.vale@lb2.com.br
+#       Versão: v1.0a
+#       LB2 Consultoria - Leading Business 2 the Next Level!
+#---------------------------------------------------------------
+import json
+import os
+import sys
+import check_ora_tps
+import check_ora_users
+
+
+class Database:
+    def __init__(self, db_name, module):
+
+        self.read_config("monitoramento.json")
+        self.config_database(db_name, module)
+
+    user = sid = password = ""
+    module = {}
+    cfg = ""
+
+    def config_database(self, db_name, module):
+        """
+        Recebe o nome do banco e
+        monta as suas diretivas
+        :param db_name: Nome do banco que recebera o script
+        :param module: Modulo que sera verificado
+        :return:
+        """
+        for db in self.cfg['databases']:
+            if db['sid'] == db_name:
+                self.sid = db['sid']
+                self.user = db['user']
+                self.password = db['password']
+                for m in db['modules']:
+                    if m['name'] == module:
+                        self.module = m
+        if self.sid == '':
+            print "UNKNOWN - Banco de dados não encontrado"
+            exit(3)
+        if self.module == {}:
+            print "UNKNOWN - Modulo não encontrado"
+            exit(3)
+
+    def read_config(self, path):
+        """
+            Realiza a leitura do JSON e adiciona a variavel config.
+            :param path: Local do json de config.
+            :return: None
+            """
+        if self.file_exists(path):
+            with open(path) as opf:
+                try:
+                    self.cfg = json.load(opf)
+                except ValueError:
+                    print "UNKNOWN - Impossivel ler arquivo de configuracao."
+                    exit(3)
+        else:
+            print "UNKNOWN - Impossivel encontrar o arquivo de configuracao."
+
+    @staticmethod
+    def file_exists(path):
+        """
+        Garante que o arquivo existe no SO
+        :param path: Path do arquivo
+        :return: Afirmação
+        """
+        # Agora tambem sei brincar de lambda
+        x = lambda y: True if os.path.isfile(y) and os.access(y, os.R_OK) else False
+        return x(path)
+
+    def run_module(self):
+        if self.module['name'] == 'tablespaces':
+            print "radical"
+        elif self.module['name'] == 'alertlog':
+            print "alertlog"
+        elif self.module['name'] == 'tps':
+            check_ora_tps.main(self.sid, self.user, self.password, self.module['warning'])
+        elif self.module['name'] == 'users':
+            check_ora_users.main(self.sid, self.user, self.password,
+                                 self.module['warning'], self.module['sum']
+                                 , self.module['schemas'])
+
+
+def main(argv):
+    db, m = parse_args(argv)
+    database = Database(db, m)
+    database.run_module()
+
+
+def parse_args(argv):
+    """
+    Analisa os argumentos. Foi feito de maneira simples
+    para nao ficar dependente do argparse
+    :param argv: Argumentos do script
+    :return: Tupla com os dois argumentos
+    """
+    global db_name, module
+    if len(argv) != 2:
+        print "Usage: ./lb2_oracle dbname module"
+        exit(3)
+    else:
+        db_name = argv[0]
+        module = argv[1]
+    return db_name, module
+
+
+if __name__ == '__main__':
+    main(sys.argv[1:])

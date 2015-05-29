@@ -1,0 +1,49 @@
+{
+    "databases" : [
+        {
+            "sid": "lb2app",
+            "user": "sys",
+            "password": "oracle",
+            "modules" : [
+                {
+                    "name" : "alertlog",
+                    "path" : "/u01/app/oracle/diag/nova/NOVA/trace/alert_NOVA.log"
+                },
+                {
+                    "name" : "tablespaces",
+                    "warning" : "95",
+                    "critical" : "97",
+                    "autoextend" : "true"
+                },
+                {
+                    "name" : "tps",
+                    "warning" :"10"
+                },
+                {
+                    "name" : "users",
+                    "warning" : "100",
+                    "sum" : false,
+                    "schemas" : "LB2_TOTVS"
+                }
+            ]
+
+        },
+        {
+            "sid": "TESTE",
+            "user": "sys",
+            "password": "oracle",
+            "modules" : [
+                {
+                    "name" : "alertlog",
+                    "path" : "/u01/app/oracle/diag/nova/NOVA/trace/alert_TESTE.log"
+                },
+                {
+                    "name" : "tablespaces",
+                    "warning" : "95",
+                    "critical" : "97",
+                    "autoextend" : "true"
+                }
+            ]
+        }
+    ]
+}
