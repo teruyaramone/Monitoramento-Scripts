@@ -13,6 +13,7 @@
 import json
 import os
 import sys
+import check_backup
 import check_ora_tps
 import check_ora_users
 
@@ -88,7 +89,10 @@ class Database:
             check_ora_users.main(self.sid, self.user, self.password,
                                  self.module['warning'], self.module['sum']
                                  , self.module['schemas'])
-
+        elif self.module['name'] == 'rman' or self.module['name'] == 'datapump':
+            check_backup.main(self.module['yesterday'], self.module['path'],
+                              self.module['name_pattern'], self.module['error_pattern'],
+                              self.module['finish_time'], self.module['ignore_file'])
 
 def main(argv):
     db, m = parse_args(argv)

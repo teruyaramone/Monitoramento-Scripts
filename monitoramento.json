@@ -24,9 +24,17 @@
                     "warning" : "100",
                     "sum" : false,
                     "schemas" : "LB2_TOTVS"
+                },
+                {
+                    "name" : "rman",
+                    "yesterday" : false,
+                    "path" : "/Users/bernardovale/PycharmProjects/",
+                    "name_pattern" : "rman_",
+                    "error_pattern" : "RMAN-",
+                    "finish_time" : "07",
+                    "ignore_file" : null
                 }
             ]
-
         },
         {
             "sid": "TESTE",
