@@ -1,7 +1,7 @@
 {
     "databases" : [
         {
-            "sid": "dbfat",
+            "sid": "dbsistel",
             "user": "system",
             "password": "pulga",
             "modules" : [
@@ -11,9 +11,9 @@
                 },
                 {
                     "name" : "tablespaces",
-                    "warning" : "95",
+                    "warning" : "30",
                     "critical" : "98",
-                    "autoextend" : true
+                    "autoextend" : false
                 },
                 {
                     "name" : "tps",

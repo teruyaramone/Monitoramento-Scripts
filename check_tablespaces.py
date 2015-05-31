@@ -9,8 +9,8 @@ query = "set head off \n \
         set pages 500 \n \
         set head off \n \
         column tablespace_name format a20 \n \
-        column usage_pct       format 999 \n \
-        column max_pct         format 999 \n \
+        column usage_pct       format 9999 \n \
+        column max_pct         format 9999 \n \
         column autoextensible  format a5 \n \
         break on report \n \
 select	/*+ PARALLEL (4) */ df.TABLESPACE_NAME, \n \
@@ -51,6 +51,7 @@ def main(sid, user, password, warning, critical, autoextend=None):
     if 'ORA-' in result:
         print 'UNKNOWN - Erro desconhecido ao executar a query:' + result
         exit(3)
+
     m.parse_result(result)
     m.build_tablespaces()
     m.check_if_ok()
