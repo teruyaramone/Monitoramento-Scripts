@@ -1,9 +1,9 @@
 {
     "databases" : [
         {
-            "sid": "lb2app",
-            "user": "sys",
-            "password": "oracle",
+            "sid": "dbfat",
+            "user": "system",
+            "password": "pulga",
             "modules" : [
                 {
                     "name" : "alertlog",
@@ -11,8 +11,8 @@
                 },
                 {
                     "name" : "tablespaces",
-                    "warning" : "3",
-                    "critical" : "4",
+                    "warning" : "95",
+                    "critical" : "98",
                     "autoextend" : true
                 },
                 {

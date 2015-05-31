@@ -97,7 +97,7 @@ class Monitoring:
             self.exit = 1
             if int(tablespace.pct_used) >= int(self.critical):
                 self.exit = 2
-            self.append_tablespace_problem(tablespace.name, tablespace.pctused_auto)
+            self.append_tablespace_problem(tablespace.name, tablespace.pct_used)
 
     def check_if_ok(self):
         """
@@ -162,7 +162,7 @@ class Monitoring:
         if self.exit == 0:
             print 'TABLESPACES OK %s' % self.perf_data
         elif self.exit == 1:
-            print 'TABLESPACES WARNING - %s %s ' % (self.warning_tablespaces, self.perf_data)
+            print 'TABLESPACES WARNING - %s %s' % (self.warning_tablespaces, self.perf_data)
         elif self.exit == 2:
             print 'TABLESPACES CRITICAL - %s %s %s' % (self.warning_tablespaces,
                                                        self.critical_tablespaces, self.perf_data)
@@ -173,7 +173,7 @@ class Monitoring:
         Constroi o valor do perdata
         :return:
         """
-        self.perf_data += " {0:s}={1:s} {2:s}={3:s} ".format('WARNING', str(self.warning_count),
+        self.perf_data += "{0:s}={1:s} {2:s}={3:s}".format('WARNING', str(self.warning_count),
                                                            'CRITICAL', str(self.critical_count))
 
 
