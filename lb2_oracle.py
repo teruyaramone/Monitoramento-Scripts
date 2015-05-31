@@ -16,6 +16,7 @@ import sys
 import check_backup
 import check_ora_tps
 import check_ora_users
+import check_tablespaces
 
 
 class Database:
@@ -80,7 +81,9 @@ class Database:
 
     def run_module(self):
         if self.module['name'] == 'tablespaces':
-            print "radical"
+            check_tablespaces.main(self.sid, self.user, self.password,
+                                   self.module['warning'], self.module['critical'],
+                                   self.module['autoextend'])
         elif self.module['name'] == 'alertlog':
             print "alertlog"
         elif self.module['name'] == 'tps':

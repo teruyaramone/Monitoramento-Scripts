@@ -11,9 +11,9 @@
                 },
                 {
                     "name" : "tablespaces",
-                    "warning" : "95",
-                    "critical" : "97",
-                    "autoextend" : "true"
+                    "warning" : "3",
+                    "critical" : "4",
+                    "autoextend" : true
                 },
                 {
                     "name" : "tps",
@@ -31,6 +31,15 @@
                     "path" : "/Users/bernardovale/PycharmProjects/",
                     "name_pattern" : "rman_",
                     "error_pattern" : "RMAN-",
+                    "finish_time" : "07",
+                    "ignore_file" : null
+                },
+                {
+                    "name" : "datapump",
+                    "yesterday" : false,
+                    "path" : "/Users/bernardovale/PycharmProjects/",
+                    "name_pattern" : "export_",
+                    "error_pattern" : "ORA-",
                     "finish_time" : "07",
                     "ignore_file" : null
                 }
