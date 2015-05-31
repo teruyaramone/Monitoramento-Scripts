@@ -126,8 +126,8 @@ class Monitoring:
         self.result = self.result.replace("    ", " ")
         self.result = self.result.replace("   ", " ")
         self.result = self.result.replace("  ", " ")
-        self.result = self.result.replace('YES', 'YES ')
-        self.result = self.result.replace('NO', 'NO ').split(' ')
+        self.result = self.result.replace(' YES', ' YES ')
+        self.result = self.result.replace(' NO', ' NO ').split(' ')
 
     def build_tablespaces(self):
         """
@@ -149,10 +149,10 @@ class Monitoring:
         """
         if self.exit == 1:
             self.warning_count += 1
-            self.warning_tablespaces += "%s %s%%" % (name, pct_used)
+            self.warning_tablespaces += "%s %s%% " % (name, pct_used)
         else:
             self.critical_count += 1
-            self.critical_tablespaces += "%s %s%%" % (name, pct_used)
+            self.critical_tablespaces += "%s %s%% " % (name, pct_used)
 
     def finish_with_output(self):
         """
@@ -162,7 +162,7 @@ class Monitoring:
         if self.exit == 0:
             print 'TABLESPACES OK %s' % self.perf_data
         elif self.exit == 1:
-            print 'TABLESPACES WARNING - %s %s' % (self.warning_tablespaces, self.perf_data)
+            print 'TABLESPACES WARNING - %s %s ' % (self.warning_tablespaces, self.perf_data)
         elif self.exit == 2:
             print 'TABLESPACES CRITICAL - %s %s %s' % (self.warning_tablespaces,
                                                        self.critical_tablespaces, self.perf_data)
@@ -173,7 +173,7 @@ class Monitoring:
         Constroi o valor do perdata
         :return:
         """
-        self.perf_data += "{0:s}={1:s} {2:s}={3:s}".format('WARNING', str(self.warning_count),
+        self.perf_data += " {0:s}={1:s} {2:s}={3:s} ".format('WARNING', str(self.warning_count),
                                                            'CRITICAL', str(self.critical_count))
 
 
