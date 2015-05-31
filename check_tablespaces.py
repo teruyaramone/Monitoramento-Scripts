@@ -9,8 +9,8 @@ query = "set head off \n \
         set pages 500 \n \
         set head off \n \
         column tablespace_name format a20 \n \
-        column usage_pct       format 999 \n \
-        column max_pct         format 999 \n \
+        column usage_pct       format 9999 \n \
+        column max_pct         format 9999 \n \
         column autoextensible  format a5 \n \
         break on report \n \
 select	/*+ PARALLEL (4) */ df.TABLESPACE_NAME, \n \
@@ -51,6 +51,7 @@ def main(sid, user, password, warning, critical, autoextend=None):
     if 'ORA-' in result:
         print 'UNKNOWN - Erro desconhecido ao executar a query:' + result
         exit(3)
+
     m.parse_result(result)
     m.build_tablespaces()
     m.check_if_ok()
@@ -97,7 +98,7 @@ class Monitoring:
             self.exit = 1
             if int(tablespace.pct_used) >= int(self.critical):
                 self.exit = 2
-            self.append_tablespace_problem(tablespace.name, tablespace.pctused_auto)
+            self.append_tablespace_problem(tablespace.name, tablespace.pct_used)
 
     def check_if_ok(self):
         """
@@ -126,8 +127,8 @@ class Monitoring:
         self.result = self.result.replace("    ", " ")
         self.result = self.result.replace("   ", " ")
         self.result = self.result.replace("  ", " ")
-        self.result = self.result.replace('YES', 'YES ')
-        self.result = self.result.replace('NO', 'NO ').split(' ')
+        self.result = self.result.replace(' YES', ' YES ')
+        self.result = self.result.replace(' NO', ' NO ').split(' ')
 
     def build_tablespaces(self):
         """
@@ -149,10 +150,10 @@ class Monitoring:
         """
         if self.exit == 1:
             self.warning_count += 1
-            self.warning_tablespaces += "%s %s%%" % (name, pct_used)
+            self.warning_tablespaces += "%s %s%% " % (name, pct_used)
         else:
             self.critical_count += 1
-            self.critical_tablespaces += "%s %s%%" % (name, pct_used)
+            self.critical_tablespaces += "%s %s%% " % (name, pct_used)
 
     def finish_with_output(self):
         """

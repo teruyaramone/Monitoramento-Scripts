@@ -1,9 +1,9 @@
 {
     "databases" : [
         {
-            "sid": "lb2app",
-            "user": "sys",
-            "password": "oracle",
+            "sid": "dbsistel",
+            "user": "system",
+            "password": "pulga",
             "modules" : [
                 {
                     "name" : "alertlog",
@@ -11,9 +11,9 @@
                 },
                 {
                     "name" : "tablespaces",
-                    "warning" : "3",
-                    "critical" : "4",
-                    "autoextend" : true
+                    "warning" : "30",
+                    "critical" : "98",
+                    "autoextend" : false
                 },
                 {
                     "name" : "tps",
