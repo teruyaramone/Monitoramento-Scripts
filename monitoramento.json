@@ -7,7 +7,9 @@
             "modules" : [
                 {
                     "name" : "alertlog",
-                    "path" : "/u01/app/oracle/diag/nova/NOVA/trace/alert_NOVA.log"
+                    "logfile" : "/Users/bernardovale/PycharmProjects/Monitoramento Scripts/alertlog.log",
+                    "clear_time" : 60,
+                    "config" : "/Users/bernardovale/PycharmProjects/Monitoramento Scripts/alertlog.json"
                 },
                 {
                     "name" : "tablespaces",
@@ -22,7 +24,7 @@
                 {
                     "name" : "users",
                     "warning" : "100",
-                    "sum" : false,
+                    "sum" : true,
                     "schemas" : "LB2_TOTVS"
                 },
                 {

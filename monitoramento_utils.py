@@ -10,8 +10,11 @@
 #       Versão: v1.0a
 #       LB2 Consultoria - Leading Business 2 the Next Level!
 #---------------------------------------------------------------
+import json
 import subprocess
 import re
+import os
+import sys
 
 __author__ = 'bernardovale'
 
@@ -19,6 +22,17 @@ class Utils:
 
     def __init__(self):
         pass
+
+    @staticmethod
+    def file_exists(path):
+        """
+        Garante que o arquivo existe no SO
+        :param path: Path do arquivo
+        :return: Afirmação
+        """
+        # Agora tambem sei brincar de lambda
+        x = lambda y: True if os.path.isfile(y) and os.access(y, os.R_OK) else False
+        return x(path)
 
     @staticmethod
     def run_sqlplus(pwd, user, sid, query, pretty, is_sysdba):
@@ -46,3 +60,24 @@ class Utils:
             exit(2)
         else:
             return stdout
+    @staticmethod
+    def read_json(path):
+        """
+        Realiza a leitura do JSON.
+        :param path: Local do json de config.
+        :return: None
+        """
+        if Utils.file_exists(path):
+            with open(path) as opf:
+                try:
+                    return json.load(opf)
+                except ValueError:
+                    print "UNKNOWN - Impossivel ler arquivo de configuracao."
+                    exit(3)
+        else:
+            print "UNKNOWN - Impossivel encontrar o arquivo de configuracao."
+            exit(3)
+
+    @staticmethod
+    def fullpath(file):
+        return "%s/%s" % (os.path.dirname(sys.argv[0]),file)

@@ -55,3 +55,7 @@ target/
 
 #Pycharm
 .idea/
+
+#Logs
+*.log
+*.tmp

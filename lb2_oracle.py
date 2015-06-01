@@ -4,8 +4,8 @@
 #                 Scripts de Monitoramento do Oracle Database
 #
 #       Autor: Bernardo S E Vale
-#       Data Inicio:  29/09/2015
-#       Data Release: 29/09/2015
+#       Data Inicio:  29/05/2015
+#       Data Release: 29/05/2015
 #       email: bernardo.vale@lb2.com.br
 #       Versão: v1.0a
 #       LB2 Consultoria - Leading Business 2 the Next Level!
@@ -13,20 +13,38 @@
 import json
 import os
 import sys
+import check_alert
 import check_backup
 import check_ora_tps
 import check_ora_users
 import check_tablespaces
+from monitoramento_utils import Utils
 
 
 class Database:
     def __init__(self, db_name, module):
-        self.read_config("%s/monitoramento.json" % os.path.dirname(sys.argv[0]))
+        self.read_config(Utils.fullpath("monitoramento.json"))
         self.config_database(db_name, module)
 
     user = sid = password = ""
     module = {}
     cfg = ""
+
+    def read_config(self, path):
+        """
+        Realiza a leitura do JSON e adiciona a variavel config.
+        :param path: Local do json de config.
+        :return: None
+        """
+        if Utils.file_exists(path):
+            with open(path) as opf:
+                try:
+                    self.cfg = json.load(opf)
+                except ValueError:
+                    print "UNKNOWN - Impossivel ler arquivo de configuracao."
+                    exit(3)
+        else:
+            print "UNKNOWN - Impossivel encontrar o arquivo de configuracao."
 
     def config_database(self, db_name, module):
         """
@@ -51,40 +69,14 @@ class Database:
             print "UNKNOWN - Modulo não encontrado"
             exit(3)
 
-    def read_config(self, path):
-        """
-            Realiza a leitura do JSON e adiciona a variavel config.
-            :param path: Local do json de config.
-            :return: None
-            """
-        if self.file_exists(path):
-            with open(path) as opf:
-                try:
-                    self.cfg = json.load(opf)
-                except ValueError:
-                    print "UNKNOWN - Impossivel ler arquivo de configuracao."
-                    exit(3)
-        else:
-            print "UNKNOWN - Impossivel encontrar o arquivo de configuracao."
-
-    @staticmethod
-    def file_exists(path):
-        """
-        Garante que o arquivo existe no SO
-        :param path: Path do arquivo
-        :return: Afirmação
-        """
-        # Agora tambem sei brincar de lambda
-        x = lambda y: True if os.path.isfile(y) and os.access(y, os.R_OK) else False
-        return x(path)
-
     def run_module(self):
         if self.module['name'] == 'tablespaces':
             check_tablespaces.main(self.sid, self.user, self.password,
                                    self.module['warning'], self.module['critical'],
                                    self.module['autoextend'])
         elif self.module['name'] == 'alertlog':
-            print "alertlog"
+            check_alert.main(self.module['logfile'], self.module['clear_time']
+                             , self.module['config'])
         elif self.module['name'] == 'tps':
             check_ora_tps.main(self.sid, self.user, self.password, self.module['warning'])
         elif self.module['name'] == 'users':
