@@ -21,8 +21,7 @@ import check_tablespaces
 
 class Database:
     def __init__(self, db_name, module):
-
-        self.read_config("monitoramento.json")
+        self.read_config("%s/monitoramento.json" % os.path.dirname(sys.argv[0]))
         self.config_database(db_name, module)
 
     user = sid = password = ""
@@ -59,14 +58,12 @@ class Database:
             :return: None
             """
         if self.file_exists(path):
-            opf = open(path, 'r')
-            try:
-                self.cfg = json.load(opf)
-            except ValueError:
-                print "UNKNOWN - Impossivel ler arquivo de configuracao."
-                exit(3)
-            finally:
-                opf.close()
+            with open(path) as opf:
+                try:
+                    self.cfg = json.load(opf)
+                except ValueError:
+                    print "UNKNOWN - Impossivel ler arquivo de configuracao."
+                    exit(3)
         else:
             print "UNKNOWN - Impossivel encontrar o arquivo de configuracao."
 
