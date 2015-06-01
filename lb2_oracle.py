@@ -59,12 +59,14 @@ class Database:
             :return: None
             """
         if self.file_exists(path):
-            with open(path) as opf:
-                try:
-                    self.cfg = json.load(opf)
-                except ValueError:
-                    print "UNKNOWN - Impossivel ler arquivo de configuracao."
-                    exit(3)
+            opf = open(path, 'r')
+            try:
+                self.cfg = json.load(opf)
+            except ValueError:
+                print "UNKNOWN - Impossivel ler arquivo de configuracao."
+                exit(3)
+            finally:
+                opf.close()
         else:
             print "UNKNOWN - Impossivel encontrar o arquivo de configuracao."
 
