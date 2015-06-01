@@ -41,7 +41,7 @@ def main(sid, user, pwd, warning):
         exit(3)
     else:
         perf_data = 'TPS=' + result
-        if float(result) > int(warning):
+        if float(result.replace(',','.')) > int(warning):
             print 'WARNING - Quantidade de transações por segundo acima no normal. TPS:'+result+' | ' +perf_data
             exit(1)
         else:
