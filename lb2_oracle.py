@@ -21,8 +21,7 @@ import check_tablespaces
 
 class Database:
     def __init__(self, db_name, module):
-
-        self.read_config("monitoramento.json")
+        self.read_config("%s/monitoramento.json" % os.path.dirname(sys.argv[0]))
         self.config_database(db_name, module)
 
     user = sid = password = ""
