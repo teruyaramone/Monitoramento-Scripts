@@ -124,6 +124,8 @@ class Monitoring:
         :return: Lista com resultado formatado
         """
         self.result = r.strip()
+        self.result = self.result.replace("|", " ")
+        self.result = self.result.replace("     ", " ")
         self.result = self.result.replace("    ", " ")
         self.result = self.result.replace("   ", " ")
         self.result = self.result.replace("  ", " ")
