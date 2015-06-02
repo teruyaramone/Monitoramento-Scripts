@@ -52,11 +52,17 @@ class Monitoring:
         clear = dt + clear_time
         return True if clear < current_time else False
 
-    def populate_errors(self):
-        error_list = Utils.read_json(Utils.fullpath('alertlog_errors.json'))['errors']
-        for error in error_list:
-            if self.error_is_cleared(error['date']):
-                print "Clear: %s " % error['message']
+    def clear_old_errors(self):
+        """
+        Remove do JSON todos os erros que ja passaram do tempo
+        clean_time
+        :return:
+        """
+        error_list = Utils.read_json(Utils.fullpath('alertlog_errors.json'))
+        error_list = [error for error in error_list if not self.error_is_cleared(error['date'])]
+        self.error_list = error_list
+        self.write_error_json()
+
 
     def write_error_json(self):
         """
@@ -161,7 +167,8 @@ def main(logfile, clear_time, config):
     m = Monitoring(logfile, clear_time, config, i)
     m.read_partial_file()
     m.read_log()
-    m.write_error_json()
+    m.clear_old_errors()
+    #m.write_error_json()
     #print m.critical_count
     #print m.warning_count
     #print m.error_list
