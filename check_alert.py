@@ -4,7 +4,7 @@
 #
 # Autor: Bernardo S E Vale
 # Data Inicio:  01/06/2015
-#       Data Release: 01/06/2015
+# Data Release: 01/06/2015
 #       email: bernardo.vale@lb2.com.br
 #       Versão: v1.0a
 #       LB2 Consultoria - Leading Business 2 the Next Level!
@@ -28,6 +28,7 @@ class Issues:
         self.warning = json['warning']
         self.critical = json['critical']
 
+
 class Monitoring:
     def __init__(self, logfile, clear_time, config, issues):
         self.logfile = logfile
@@ -39,8 +40,9 @@ class Monitoring:
         self.warning_count = 0
         self.critical_count = 0
         self.error_list = []
+        self.lines_counted = 0
 
-    def error_is_cleared(self,error_date):
+    def error_is_cleared(self, error_date):
         """
         Verifica se o erro ja pode ser limpo
         :param error_date: Datetime
@@ -84,25 +86,21 @@ class Monitoring:
         :return:
         """
         current_time = datetime.datetime.now().strftime("%Y%m%d%H%M")
-        new_error = {'message' : error,
-                     'date' : current_time,
-                     'critical' : is_critical
+        new_error = {'message': error,
+                     'date': current_time,
+                     'critical': is_critical
         }
         self.error_list.append(new_error)
 
     def find_errors(self, line):
         for critical in self.issues.critical:
             if critical in line:
-                err = line.replace('\n','')
-                #self.error_list.append(err)
-                self.critical_count += 1
+                err = line.replace('\n', '')
                 self.append_error(err, True)
                 return
         for warning in self.issues.warning:
             if warning in line:
-                err = line.replace('\n','')
-                #self.error_list.append(err)
-                self.warning_count += 1
+                err = line.replace('\n', '')
                 self.append_error(err, False)
                 return
 
@@ -125,20 +123,46 @@ class Monitoring:
                     print "UNKNOWN - Erro ao escrever check_alertlog.tmp. Verifique as permissoes."
                     exit(3)
 
+    def exit_status(self):
+        aux_message = ''
+        exit_status = 0
+        if self.error_list is []:
+            # Nenhum erro encontrado
+            print "OK - Nenhum erro encontrado. %s" % self.deploy_perfdata()
+            exit(0)
+        else:
+            exit_status = 1
+            for error in self.error_list:
+                if error['critical']:
+                    aux_message += ' CRITICAL:%s' % error['message']
+                    self.critical_count += 1
+                    exit_status = 2
+                else:
+                    aux_message += ' WARNING:%s' % error['message']
+                    self.warning_count += 1
+        print aux_message + self.deploy_perfdata()
+        exit(exit_status)
+
+
     def read_log(self):
-        count = 0
+        """
+        Realiza a leitura das novas linhas do log
+        Procura pelos erros e faz a contagem de linhas
+        para atualizar a ultima posicao lida do log.
+        Caso ja tenha lido tudo faz sua saida padrao.
+        :return:
+        """
         if Utils.file_exists(self.logfile):
             with open(self.logfile) as f:
                 for _ in xrange(int(self.last_position)):
                     next(f)
                 for line in f:
                     self.find_errors(line)
-                    count += 1
-        if count > 0:
-            self.update_log_position(count)
+                    self.lines_counted += 1
+        if self.lines_counted > 0:
+            self.update_log_position(self.lines_counted)
         else:
-            print "Log OK - Sem novas informações"
-            exit(0)
+            self.exit_status()
 
     def update_log_position(self, lines_read):
         """
@@ -153,6 +177,10 @@ class Monitoring:
                 print "UNKNOWN - Erro ao escrever check_alertlog.tmp. Verifique as permissoes."
                 exit(3)
 
+    def deploy_perfdata(self):
+        perf_data = "| LINES_READ=%s WARNINGS=%s CRITICALS=%s" \
+                    % (self.lines_counted, self.warning_count, self.critical_count)
+        return perf_data
 
 def main(logfile, clear_time, config):
     """
@@ -165,10 +193,11 @@ def main(logfile, clear_time, config):
     """
     i = Issues(config)
     m = Monitoring(logfile, clear_time, config, i)
+    m.clear_old_errors()
     m.read_partial_file()
     m.read_log()
-    m.clear_old_errors()
-    #m.write_error_json()
+    m.write_error_json()
+    m.exit_status()
     #print m.critical_count
     #print m.warning_count
     #print m.error_list
