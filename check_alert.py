@@ -1,3 +1,4 @@
+#!/usr/bin/python
 # coding=utf-8
 # -------------------------------------------------------------
 # Scripts de Monitoramento do Oracle Database
@@ -106,8 +107,8 @@ class Monitoring:
                 return
 
     def read_partial_file(self):
-        if Utils.file_exists('check_alertlog.tmp'):
-            with open('check_alertlog.tmp', 'r') as f:
+        if Utils.file_exists(Utils.fullpath('check_alertlog.tmp')):
+            with open(Utils.fullpath('check_alertlog.tmp'), 'r') as f:
                 try:
                     f.seek(0)
                     file_content = f.readline()
@@ -116,7 +117,7 @@ class Monitoring:
                     print "UNKNOWN - Impossivel ler logfile."
                     exit(3)
         else:
-            with open('check_alertlog.tmp', 'a') as f:
+            with open(Utils.fullpath('check_alertlog.tmp'), 'a') as f:
                 try:
                     f.write('0')
                     self.last_position = 0
@@ -175,7 +176,7 @@ class Monitoring:
         :param lines_read: Numero de linhas lidas
         """
         self.last_position = int(self.last_position) + int(lines_read)
-        with open('check_alertlog.tmp', 'w') as f:
+        with open(Utils.fullpath('check_alertlog.tmp'), 'w') as f:
             try:
                 f.write(str(self.last_position))
             except:
@@ -188,7 +189,7 @@ class Monitoring:
         return perf_data
 
     def clear_log_position(self):
-        with open('check_alertlog.tmp', 'w') as f:
+        with open(Utils.fullpath('check_alertlog.tmp'), 'w') as f:
             try:
                 f.write("0")
             except:
