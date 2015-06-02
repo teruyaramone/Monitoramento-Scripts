@@ -128,7 +128,7 @@ class Monitoring:
     def exit_status(self):
         aux_message = ''
         exit_status = 0
-        if self.error_list is []:
+        if self.error_list == []:
             # Nenhum erro encontrado
             print "OK - Nenhum erro encontrado. %s" % self.deploy_perfdata()
             exit(0)
