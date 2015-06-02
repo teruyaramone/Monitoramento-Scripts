@@ -161,6 +161,10 @@ class Monitoring:
                 for line in f:
                     self.find_errors(line)
                     self.lines_counted += 1
+        else:
+            self.clear_log_position()
+            print "UNKNOWN - Logfile nao encontrado"
+            exit(3)
         if self.lines_counted > 0:
             self.update_log_position(self.lines_counted)
         else:
@@ -183,6 +187,15 @@ class Monitoring:
         perf_data = "| LINES_READ=%s WARNINGS=%s CRITICALS=%s" \
                     % (self.lines_counted, self.warning_count, self.critical_count)
         return perf_data
+
+    def clear_log_position(self):
+        with open('check_alertlog.tmp', 'w') as f:
+            try:
+                f.write("0")
+            except:
+                print "UNKNOWN - Erro ao escrever check_alertlog.tmp. Verifique as permissoes."
+                exit(3)
+
 
 def main(logfile, clear_time, config):
     """
