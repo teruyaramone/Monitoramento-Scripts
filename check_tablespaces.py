@@ -124,11 +124,14 @@ class Monitoring:
         :return: Lista com resultado formatado
         """
         self.result = r.strip()
+        self.result = self.result.replace("|", " ")
+        self.result = self.result.replace("     ", " ")
         self.result = self.result.replace("    ", " ")
         self.result = self.result.replace("   ", " ")
         self.result = self.result.replace("  ", " ")
         self.result = self.result.replace(' YES', ' YES ')
         self.result = self.result.replace(' NO', ' NO ').split(' ')
+        print self.result
 
     def build_tablespaces(self):
         """
