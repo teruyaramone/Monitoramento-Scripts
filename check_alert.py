@@ -11,7 +11,6 @@
 #---------------------------------------------------------------
 import datetime
 import json
-import time
 from monitoramento_utils import Utils
 
 
@@ -142,7 +141,7 @@ class Monitoring:
                 else:
                     aux_message += ' WARNING:%s' % error['message']
                     self.warning_count += 1
-        print aux_message + self.deploy_perfdata()
+        print aux_message.encode('utf8') + self.deploy_perfdata()
         exit(exit_status)
 
 

@@ -131,7 +131,6 @@ class Monitoring:
         self.result = self.result.replace("  ", " ")
         self.result = self.result.replace(' YES', ' YES ')
         self.result = self.result.replace(' NO', ' NO ').split(' ')
-        print self.result
 
     def build_tablespaces(self):
         """
