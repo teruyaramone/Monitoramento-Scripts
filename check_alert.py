@@ -212,7 +212,3 @@ def main(logfile, clear_time, config):
     m.read_log()
     m.write_error_json()
     m.exit_status()
-    #print m.critical_count
-    #print m.warning_count
-    #print m.error_list
-    #m.populate_errors()
