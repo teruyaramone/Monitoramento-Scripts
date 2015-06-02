@@ -93,6 +93,8 @@ class Monitoring:
         self.error_list.append(new_error)
 
     def find_errors(self, line):
+        #Necessario devido a logs do oracle em ptbr
+        line = str(line).decode('latin-1')
         for critical in self.issues.critical:
             if critical in line:
                 err = line.replace('\n', '')

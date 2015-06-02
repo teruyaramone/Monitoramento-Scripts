@@ -7,7 +7,7 @@
             "modules" : [
                 {
                     "name" : "alertlog",
-                    "logfile" : "/Users/bernardovale/PycharmProjects/Monitoramento Scripts/alertlog.log",
+                    "logfile" : "/Users/bernardovale/PycharmProjects/Monitoramento Scripts/alert_pimscs.log",
                     "clear_time" : 60,
                     "config" : "/Users/bernardovale/PycharmProjects/Monitoramento Scripts/alertlog.json"
                 },
