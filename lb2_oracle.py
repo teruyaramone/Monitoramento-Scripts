@@ -15,6 +15,7 @@ import os
 import sys
 import check_alert
 import check_backup
+import check_dbgrowth
 import check_ora_tps
 import check_ora_users
 import check_tablespaces
@@ -87,6 +88,10 @@ class Database:
             check_backup.main(self.module['yesterday'], self.module['path'],
                               self.module['name_pattern'], self.module['error_pattern'],
                               self.module['finish_time'], self.module['ignore_file'])
+        elif self.module['name'] == 'dbgrowth':
+            check_dbgrowth.main(self.sid, self.user, self.password,
+                                self.module['disktime'], self.module['asm'],
+                                self.module['localdisk'])
 
 def main(argv):
     db, m = parse_args(argv)
