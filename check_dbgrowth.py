@@ -77,8 +77,8 @@ class Monitoring:
         i = 0
         variance = 0
         #todo Melhorar o metodo.Esta implementando media simples
-        if len(self.gather_list) >= 4:
-            aux_list = self.gather_list[-4:]
+        if len(self.gather_list) >= 7:
+            aux_list = self.gather_list[-7:]
         elif len(self.gather_list) == 1:
             self.growth_avg = 1
             return
