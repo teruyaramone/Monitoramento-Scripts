@@ -84,17 +84,17 @@ class Monitoring:
         else:
             aux_list = self.gather_list
         #-1 para n falhar com numero impar
-        while i < len(aux_list)-1:
+        while i < len(aux_list) -1:
             value_0 = aux_list[i]['gather']
             value_1 = aux_list[i + 1]['gather']
             variance += value_1 - value_0
-            i += 2
+            i += 1
         #total = statistics.mean(gather['gather'] for gather in aux_list)
         #evitar divisao por 0 no calc no days_left
         if variance == 0:
             self.growth_avg = 1
         else:
-            self.growth_avg = variance / len(aux_list)
+            self.growth_avg = variance / len(aux_list)-1
 
 
     def append_gather(self):
@@ -102,7 +102,7 @@ class Monitoring:
         Adiciona uma nova coleta ao json
         :return:
         """
-        current_time = datetime.datetime.now().strftime("%Y%m%d%H%M")
+        current_time = datetime.datetime.now().strftime("%Y%m%d")
         g = {'gather': self.growth_gather,
              'date': current_time
         }
