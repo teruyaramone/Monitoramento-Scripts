@@ -1,9 +1,9 @@
 {
     "databases" : [
         {
-            "sid": "dbsistel",
+            "sid": "lb2app",
             "user": "system",
-            "password": "pulga",
+            "password": "oracle",
             "modules" : [
                 {
                     "name" : "alertlog",
@@ -26,6 +26,12 @@
                     "warning" : "100",
                     "sum" : true,
                     "schemas" : "LB2_TOTVS"
+                },
+                {
+                    "name" : "dbgrowth",
+                    "disktime" : true,
+                    "localdisk" : "/,/dev",
+                    "asm" : ""
                 },
                 {
                     "name" : "rman",
