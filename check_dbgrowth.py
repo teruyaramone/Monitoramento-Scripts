@@ -17,11 +17,12 @@ class Monitoring:
         self.growth_gather = 0
         self.gather_list = []
         self.days_left = 0
+        self.diskspace = 0
 
     def db_growth(self):
         query = "set head off \n \
                 set feedback off \n \
-                SELECT  TRUNC(SUM((A.BYTES-B.BYTES))/1024/1024) TOTAL_UTILIZADO_SIZE \n \
+                SELECT  TRUNC(SUM((A.BYTES-B.BYTES))) TOTAL_UTILIZADO_SIZE \n \
                 FROM \n \
                 (   SELECT  x.TABLESPACE_NAME, SUM(x.BYTES) BYTES \n \
                         FROM    DBA_DATA_FILES x,DBA_TABLESPACES y \n \
@@ -50,14 +51,14 @@ class Monitoring:
     def disktime_localdisk(self):
         """
         Calcula o tempo de disco em filesystem
-        :param args:
         :return:
         """
         disk_list = self.disklist(self.localdisk)
         sum = 0
         for disk in disk_list:
             sum += GrowthUtils.get_free_space_mb(disk)
-        self.days_left = int(float(sum) / float(self.growth_avg))
+        self.diskspace = float(sum)
+        self.days_left = int(self.diskspace / float(self.growth_avg))
 
     def disklist(self, diskstring):
         """
@@ -135,9 +136,8 @@ class Monitoring:
         self.gather_list = gather_list
 
     def exit_status(self):
-        perf_data = '| DAYS_LEFT=%s AVG_GROWTH=%s DATABASE_SIZE=%s' % (self.days_left,
-                                                                       self.growth_avg,
-                                                                       self.growth_gather)
+        perf_data = '| DAYS_LEFT=%s AVG_GROWTH=%s DATABASE_SIZE=%s DISK_SPACE=%s' % \
+                    (self.days_left,self.growth_avg,self.growth_gather,self.diskspace)
         if self.disktime:
             if self.days_left < 90:
                 print 'WARNING - Menos de tres meses de espaco! %s ' % perf_data

@@ -26,7 +26,7 @@ class GrowthUtils:
         except:
             print 'UNKNOWN - Filesystem %s nao encontrado' % p
             exit(3)
-        return _st.f_bavail * _st.f_frsize/1024/1024
+        return _st.f_bavail * _st.f_frsize
 # def file_to_string(my_file):
 #     """
 #     Retorna uma string com o arquivo
