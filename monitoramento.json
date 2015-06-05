@@ -1,9 +1,9 @@
 {
     "databases" : [
         {
-            "sid": "lb2app",
+            "sid": "dbsistel",
             "user": "system",
-            "password": "oracle",
+            "password": "pulga",
             "modules" : [
                 {
                     "name" : "alertlog",

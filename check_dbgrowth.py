@@ -22,6 +22,7 @@ class Monitoring:
     def db_growth(self):
         query = "set head off \n \
                 set feedback off \n \
+                column TOTAL_UTILIZADO_SIZE       format 999999999999999 \n \
                 SELECT  TRUNC(SUM((A.BYTES-B.BYTES))) TOTAL_UTILIZADO_SIZE \n \
                 FROM \n \
                 (   SELECT  x.TABLESPACE_NAME, SUM(x.BYTES) BYTES \n \
@@ -42,7 +43,7 @@ class Monitoring:
             print 'Erro desconhecido ao executar a query:' + result
             exit(3)
         try:
-            self.growth_gather = float(result.strip(' '))
+            self.growth_gather = int(result.strip(' '))
             self.append_gather()
         except:
             print 'Impossivel tratar o valor da coleta'
@@ -57,8 +58,8 @@ class Monitoring:
         sum = 0
         for disk in disk_list:
             sum += GrowthUtils.get_free_space_mb(disk)
-        self.diskspace = float(sum)
-        self.days_left = int(self.diskspace / float(self.growth_avg))
+        self.diskspace = int(sum)
+        self.days_left = int(self.diskspace / int(self.growth_avg))
 
     def disklist(self, diskstring):
         """
@@ -95,7 +96,7 @@ class Monitoring:
         if variance == 0:
             self.growth_avg = 1
         else:
-            self.growth_avg = variance / len(aux_list)-1
+            self.growth_avg = int(variance / len(aux_list)-1)
 
 
     def append_gather(self):
