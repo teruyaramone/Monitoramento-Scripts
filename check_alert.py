@@ -60,11 +60,13 @@ class Monitoring:
         clean_time
         :return:
         """
-        error_list = Utils.read_json(Utils.fullpath('alertlog_errors.json'))
-        error_list = [error for error in error_list if not self.error_is_cleared(error['date'])]
-        self.error_list = error_list
+        if Utils.file_exists_not_empty(Utils.fullpath('alertlog_errors.json')):
+            error_list = Utils.read_json(Utils.fullpath('alertlog_errors.json'))
+            error_list = [error for error in error_list if not self.error_is_cleared(error['date'])]
+            self.error_list = error_list
+        else:
+            self.error_list = []
         self.write_error_json()
-
 
     def write_error_json(self):
         """
