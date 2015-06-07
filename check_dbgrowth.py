@@ -2,6 +2,7 @@
 # coding=utf-8
 import datetime
 import json
+
 from dbgrowth_utils import GrowthUtils
 from monitoramento_utils import Utils
 
@@ -48,6 +49,34 @@ class Monitoring:
         except:
             print 'Impossivel tratar o valor da coleta'
             exit(3)
+
+
+    def disktime_asm(self):
+        """
+        Calcula o tempo de disco
+        caso seja um diskgroup ASM
+        :return:
+        """
+        query = "set head off \n \
+                set feedback off \n \
+                col free_bytes format 999999999999999 \n \
+                SELECT free_mb*1024*1024 as free_bytes \n \
+                FROM v$asm_diskgroup \n \
+                where name = '%s' \n \
+                /" % self.asm
+        if self.user.lower() == 'sys':
+            result = Utils.run_sqlplus(self.password, self.user, self.sid, query, True, True)
+        else:
+            result = Utils.run_sqlplus(self.password, self.user, self.sid, query, True, False)
+        if 'ORA-' in result:
+            print 'Erro desconhecido ao executar a query:' + result
+            exit(3)
+        try:
+            self.diskspace = int(result.strip(' '))
+        except:
+            print 'Impossivel tratar o valor de espaco ASM. Verifique o nome do diskgroup'
+            exit(3)
+        self.days_left = int(self.diskspace / int(self.growth_avg))
 
     def disktime_localdisk(self):
         """
@@ -148,12 +177,7 @@ class Monitoring:
                 exit(0)
 
 
-def disktime_asm(args):
-    print 'calculate ASM disktime'
-
-
 def main(sid, user, password, disktime, asm=None, localdisk=None):
-    args = ''
     m = Monitoring(sid, user, password, disktime, asm, localdisk)
     # pe de macaco
     i = 0
@@ -170,7 +194,7 @@ def main(sid, user, password, disktime, asm=None, localdisk=None):
             print "Os parametros asm e localdisk nao podem ser utilizados juntos."
             exit(2)
         if asm != '':  #executando com ASM
-            disktime_asm(args)
+            m.disktime_asm()
         elif localdisk != '':  #executando com localdisk
             m.disktime_localdisk()
     m.exit_status()

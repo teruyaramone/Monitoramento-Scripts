@@ -1,9 +1,9 @@
 {
     "databases" : [
         {
-            "sid": "dbsistel",
+            "sid": "cpx",
             "user": "system",
-            "password": "pulga",
+            "password": "oracle",
             "modules" : [
                 {
                     "name" : "alertlog",
@@ -30,8 +30,8 @@
                 {
                     "name" : "dbgrowth",
                     "disktime" : true,
-                    "localdisk" : "/,/dev",
-                    "asm" : ""
+                    "localdisk" : "",
+                    "asm" : "CPX"
                 },
                 {
                     "name" : "rman",
