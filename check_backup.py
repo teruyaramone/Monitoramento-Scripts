@@ -61,7 +61,7 @@ class BackupCheck:
         log = BackupCheck.readFileToArray(self, logfile)
         errors_array = []
         for line in log:
-            if pattern in line and self.is_not_ignored(line):
+            if pattern in unicode(line, 'utf-8') and self.is_not_ignored(line):
                 errors_array.append(str(line).strip('\n')[:30] + '.' * 3)
         return errors_array
 
