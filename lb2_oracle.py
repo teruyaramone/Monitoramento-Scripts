@@ -1,4 +1,4 @@
-#!/usr/bin/python
+# !/usr/bin/python
 # coding=utf-8
 # -------------------------------------------------------------
 #                 Scripts de Monitoramento do Oracle Database
@@ -14,6 +14,7 @@ import json
 import os
 import sys
 import check_alert
+import check_archives
 import check_backup
 import check_dbgrowth
 import check_ora_tps
@@ -92,6 +93,10 @@ class Database:
             check_dbgrowth.main(self.sid, self.user, self.password,
                                 self.module['disktime'], self.module['asm'],
                                 self.module['localdisk'])
+        elif self.module['name'] == 'archives':
+            check_archives.main(self.sid, self.user, self.password,
+                                self.module['asm'], self.module['localdisk'])
+
 
 def main(argv):
     db, m = parse_args(argv)

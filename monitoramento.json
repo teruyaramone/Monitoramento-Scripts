@@ -1,7 +1,7 @@
 {
     "databases" : [
         {
-            "sid": "cpx",
+            "sid": "integra",
             "user": "system",
             "password": "oracle",
             "modules" : [
@@ -30,8 +30,13 @@
                 {
                     "name" : "dbgrowth",
                     "disktime" : true,
-                    "localdisk" : "",
+                    "localdisk" : "/",
                     "asm" : "CPX"
+                },
+                {
+                    "name" : "archives",
+                    "localdisk" : "/",
+                    "asm" : ""
                 },
                 {
                     "name" : "rman",

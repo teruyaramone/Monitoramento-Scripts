@@ -5,6 +5,7 @@ import json
 
 from dbgrowth_utils import GrowthUtils
 from monitoramento_utils import Utils
+from utils.storage_utils import Storage
 
 
 class Monitoring:
@@ -57,24 +58,10 @@ class Monitoring:
         caso seja um diskgroup ASM
         :return:
         """
-        query = "set head off \n \
-                set feedback off \n \
-                col free_bytes format 999999999999999 \n \
-                SELECT free_mb*1024*1024 as free_bytes \n \
-                FROM v$asm_diskgroup \n \
-                where name = '%s' \n \
-                /" % self.asm
-        if self.user.lower() == 'sys':
-            result = Utils.run_sqlplus(self.password, self.user, self.sid, query, True, True)
-        else:
-            result = Utils.run_sqlplus(self.password, self.user, self.sid, query, True, False)
-        if 'ORA-' in result:
-            print 'Erro desconhecido ao executar a query:' + result
-            exit(3)
         try:
-            self.diskspace = int(result.strip(' '))
+            self.diskspace = Storage.asm_space(self.user, self.password, self.sid, self.asm)
         except:
-            print 'Impossivel tratar o valor de espaco ASM. Verifique o nome do diskgroup'
+            print 'UNKNOWN - Falha ao capturar o espaco em ASM'
             exit(3)
         self.days_left = int(self.diskspace / int(self.growth_avg))
 
@@ -84,9 +71,7 @@ class Monitoring:
         :return:
         """
         disk_list = self.disklist(self.localdisk)
-        sum = 0
-        for disk in disk_list:
-            sum += GrowthUtils.get_free_space_mb(disk)
+        sum = Storage.os_space_left(disk_list)
         self.diskspace = int(sum)
         self.days_left = int(self.diskspace / int(self.growth_avg))
 
