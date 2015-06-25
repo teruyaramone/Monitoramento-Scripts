@@ -1,9 +1,9 @@
 {
     "databases" : [
         {
-            "sid": "integra",
+            "sid": "rju",
             "user": "system",
-            "password": "oracle",
+            "password": "oracleAIX",
             "modules" : [
                 {
                     "name" : "alertlog",
@@ -13,13 +13,13 @@
                 },
                 {
                     "name" : "tablespaces",
-                    "warning" : "30",
+                    "warning" : "96",
                     "critical" : "98",
-                    "autoextend" : false
+                    "autoextend" : true
                 },
                 {
                     "name" : "tps",
-                    "warning" :"10"
+                    "warning" :"50"
                 },
                 {
                     "name" : "users",
@@ -30,8 +30,8 @@
                 {
                     "name" : "dbgrowth",
                     "disktime" : true,
-                    "localdisk" : "/",
-                    "asm" : "CPX"
+                    "localdisk" : "",
+                    "asm" : "DATA"
                 },
                 {
                     "name" : "archives",

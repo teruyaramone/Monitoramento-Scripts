@@ -63,8 +63,10 @@ class Monitoring:
         except:
             print 'UNKNOWN - Falha ao capturar o espaco em ASM'
             exit(3)
-        self.days_left = int(self.diskspace / int(self.growth_avg))
-
+        if int(self.growth_avg > 0):
+            self.days_left = int(self.diskspace / int(self.growth_avg))
+        else:
+            self.days_left = int(self.diskspace / 1)
     def disktime_localdisk(self):
         """
         Calcula o tempo de disco em filesystem
@@ -103,7 +105,7 @@ class Monitoring:
         while i < len(aux_list) -1:
             value_0 = aux_list[i]['gather']
             value_1 = aux_list[i + 1]['gather']
-            variance += value_1 - value_0
+            variance = value_1 - value_0 + variance
             i += 1
         #total = statistics.mean(gather['gather'] for gather in aux_list)
         #evitar divisao por 0 no calc no days_left
