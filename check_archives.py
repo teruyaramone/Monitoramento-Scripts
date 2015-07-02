@@ -25,6 +25,68 @@ class Monitoring:
         self.diskspace = 0
         self.archives_used = 0
         self.disk_total = 0
+        self.avg_archives = 0
+        self.avg_archive_weight = 0
+        self.disktime_left = 0
+
+    def time_left(self):
+        """
+        Calcula em horas quanto tempo
+        demoraria para estourar o espaco em disco
+        :return:
+        """
+        self.disktime_left = self.diskspace / (self.avg_archives * self.avg_archive_weight)
+
+    def avg_archives_hour(self):
+        """
+        Calcula a media de archives por hora
+        Pega a media de archives das ultimas 3 horas
+        :return:
+        """
+        query = "set head off \n \
+                set feedback off \n \
+                select trunc(count(*)/4) avg_archives from v$log_history \n \
+                where trunc(first_time,'HH24') <= trunc(sysdate,'HH24') \n \
+                and trunc(first_time,'HH24') >= trunc(sysdate,'HH24') - 3/24;"
+        if self.user.lower() == 'sys':
+            result = Utils.run_sqlplus(self.password, self.user, self.sid, query, True, True)
+        else:
+            result = Utils.run_sqlplus(self.password, self.user, self.sid, query, True, False)
+        if 'ORA-' in result:
+            print 'Erro desconhecido ao executar a query:' + result
+            exit(3)
+        try:
+            self.avg_archives = int(result.strip(' '))
+        except:
+            print 'UNKNOWN - Impossivel tratar o valor do espaco medio/hora'
+            exit(3)
+
+    def current_archive_weight(self):
+        """
+        Verifica a media do tamanho de um unico
+        archive
+        :return:
+        """
+        query = "set head off \n \
+                set feedback off \n \
+                select avg(blocks*block_size) \n \
+        from gv$archived_log h \n \
+        where trunc(sysdate,'DD') = trunc(first_time,'DD') \n \
+        and h.status IN ('A','X') \n \
+        and h.deleted = 'NO' \n \
+        AND h.archived = 'YES';"
+        if self.user.lower() == 'sys':
+            result = Utils.run_sqlplus(self.password, self.user, self.sid, query, True, True)
+        else:
+            result = Utils.run_sqlplus(self.password, self.user, self.sid, query, True, False)
+        if 'ORA-' in result:
+            print 'Erro desconhecido ao executar a query:' + result
+            exit(3)
+        try:
+            self.avg_archive_weight = int(result.strip(' '))
+        except:
+            print 'UNKNOWN - Impossivel tratar o valor de espaco em archives'
+            exit(3)
 
     def archives_used_space(self):
         """
@@ -47,7 +109,7 @@ class Monitoring:
             exit(3)
         try:
             self.archives_used = int(result.strip(' '))
-            print self.archives_used
+            #print self.archives_used
         except:
             print 'UNKNOWN - Impossivel tratar o valor de espaco em archives'
             exit(3)
@@ -62,7 +124,6 @@ class Monitoring:
         except:
             print 'UNKNOWN - Falha ao capturar o espaco em ASM'
             exit(3)
-        print self.diskspace
 
     def filesystem_space(self):
         """
@@ -72,7 +133,7 @@ class Monitoring:
         disk_list = self.disklist(self.localdisk)
         sum = Storage.os_space_left(disk_list)
         self.diskspace = int(sum)
-        self.disk_total = Storage.os_space_total(disk_list)
+        #self.disk_total = Storage.os_space_left(disk_list)
 
     def disklist(self, diskstring):
         """
@@ -95,7 +156,7 @@ class Monitoring:
 def main(sid, user, password, asm=None, localdisk=None):
     m = Monitoring(sid, user, password, asm, localdisk)
     i = 0
-    m.archives_used_space()
+    #m.archives_used_space()
     if asm == '' and localdisk == '':
         i = 1
     elif localdisk != '' and asm != '':
@@ -107,4 +168,11 @@ def main(sid, user, password, asm=None, localdisk=None):
        m.asm_space()
     elif localdisk != '':  #executando com localdisk
        m.filesystem_space()
-    m.calc_usage_percent()
+    print m.diskspace
+    m.avg_archives_hour()
+    m.current_archive_weight()
+    m.time_left()
+    print m.avg_archive_weight
+    print m.avg_archives
+    print m.disktime_left
+    #m.calc_usage_percent()

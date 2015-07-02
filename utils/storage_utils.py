@@ -61,8 +61,6 @@ class Storage:
         except:
             print 'UNKNOWN - Filesystem %s nao encontrado' % mountpoint
             exit(3)
-        print _st.f_frsize
-        print
         return _st.f_blocks * _st.f_frsize
 
     @staticmethod
@@ -78,8 +76,6 @@ class Storage:
         except:
             print 'UNKNOWN - Filesystem %s nao encontrado' % mountpoint
             exit(3)
-        print _st.f_frsize
-        print
         return _st.f_bavail * _st.f_frsize
 
 
