@@ -35,8 +35,10 @@
                 },
                 {
                     "name" : "archives",
-                    "localdisk" : "/",
-                    "asm" : ""
+                    "localdisk" : "",
+                    "asm" : "DATA",
+                    "warning" : 168,
+                    "critical" : 24
                 },
                 {
                     "name" : "rman",

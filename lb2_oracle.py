@@ -95,6 +95,7 @@ class Database:
                                 self.module['localdisk'])
         elif self.module['name'] == 'archives':
             check_archives.main(self.sid, self.user, self.password,
+                                self.module['warning'], self.module['critical'],
                                 self.module['asm'], self.module['localdisk'])
 
 
