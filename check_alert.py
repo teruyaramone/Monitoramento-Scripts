@@ -18,7 +18,7 @@ from monitoramento_utils import Utils
 class Issues:
     warning = []
     critical = []
-
+    ignore = []
     def __init__(self, config):
         self.config = config
         self.build_issues()
@@ -27,6 +27,7 @@ class Issues:
         json = Utils.read_json(self.config)
         self.warning = json['warning']
         self.critical = json['critical']
+        self.ignore = json['ignore']
 
 
 class Monitoring:
@@ -94,19 +95,33 @@ class Monitoring:
         }
         self.error_list.append(new_error)
 
+    def not_ignored(self, pattern):
+        """
+        Verifica se o erro esta marcado como
+        ignored
+        :param pattern: str(error)
+        :return: bool
+        """
+        for ignore in self.issues.ignore:
+            if ignore in pattern:
+                return False
+        return True
+
     def find_errors(self, line):
         #Necessario devido a logs do oracle em ptbr
         line = str(line).decode('latin-1')
         for critical in self.issues.critical:
             if critical in line:
-                err = line.replace('\n', '')
-                self.append_error(err, True)
-                return
+                if self.not_ignored(line):
+                    err = line.replace('\n', '')
+                    self.append_error(err, True)
+                    return
         for warning in self.issues.warning:
             if warning in line:
-                err = line.replace('\n', '')
-                self.append_error(err, False)
-                return
+                if self.not_ignored(line):
+                    err = line.replace('\n', '')
+                    self.append_error(err, False)
+                    return
 
     def read_partial_file(self):
         if Utils.file_exists(Utils.fullpath('check_alertlog.tmp')):
