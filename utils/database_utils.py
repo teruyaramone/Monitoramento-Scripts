@@ -23,8 +23,8 @@ class Db:
             print 'Erro desconhecido ao executar a query:' + result
             exit(3)
         try:
-            r = int(result.strip(' '))
+            r = int(result.replace(',','').replace('.','').strip(' '))
         except:
-            print 'Impossivel tratar o resultado da query'
+            print 'Impossivel tratar o resultado da query: %s' % result
             exit(3)
         return r

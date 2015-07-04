@@ -113,12 +113,19 @@ def parse_args(argv):
     :return: Tupla com os dois argumentos
     """
     global db_name, module
-    if len(argv) != 2:
-        print "Usage: ./lb2_oracle dbname module"
-        exit(3)
-    else:
+    if len(argv) == 2:
         db_name = argv[0]
         module = argv[1]
+    # Esse pequeno artificio tem uma unica utilidade
+    # o NRDS nao permite varios parametros separados
+    # por espaco. Portanto adicionamos "-p" para
+    # o NRDS tratar os proximos parametros
+    elif len(argv) == 3 and argv[0] == '-p':
+        db_name = argv[1]
+        module = argv[2]
+    else:
+        print "Usage: ./lb2_oracle dbname module"
+        exit(3)
     return db_name, module
 
 
