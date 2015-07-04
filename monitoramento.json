@@ -1,9 +1,9 @@
 {
     "databases" : [
         {
-            "sid": "lb2app",
+            "sid": "rju",
             "user": "system",
-            "password": "oracle",
+            "password": "oracleAIX",
             "modules" : [
                 {
                     "name" : "alertlog",
@@ -13,13 +13,13 @@
                 },
                 {
                     "name" : "tablespaces",
-                    "warning" : "30",
+                    "warning" : "96",
                     "critical" : "98",
-                    "autoextend" : false
+                    "autoextend" : true
                 },
                 {
                     "name" : "tps",
-                    "warning" :"10"
+                    "warning" :"50"
                 },
                 {
                     "name" : "users",
@@ -30,15 +30,22 @@
                 {
                     "name" : "dbgrowth",
                     "disktime" : true,
-                    "localdisk" : "/,/dev",
-                    "asm" : ""
+                    "localdisk" : "",
+                    "asm" : "DATA"
+                },
+                {
+                    "name" : "archives",
+                    "localdisk" : "",
+                    "asm" : "DATA",
+                    "warning" : 168,
+                    "critical" : 24
                 },
                 {
                     "name" : "rman",
                     "yesterday" : false,
                     "path" : "/Users/bernardovale/PycharmProjects/",
                     "name_pattern" : "rman_",
-                    "error_pattern" : "RMAN-",
+                    "error_pattern"     : "RMAN-",
                     "finish_time" : "07",
                     "ignore_file" : null
                 },

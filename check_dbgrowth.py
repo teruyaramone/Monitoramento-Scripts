@@ -2,8 +2,10 @@
 # coding=utf-8
 import datetime
 import json
+
 from dbgrowth_utils import GrowthUtils
 from monitoramento_utils import Utils
+from utils.storage_utils import Storage
 
 
 class Monitoring:
@@ -17,11 +19,13 @@ class Monitoring:
         self.growth_gather = 0
         self.gather_list = []
         self.days_left = 0
+        self.diskspace = 0
 
     def db_growth(self):
         query = "set head off \n \
                 set feedback off \n \
-                SELECT  TRUNC(SUM((A.BYTES-B.BYTES))/1024/1024) TOTAL_UTILIZADO_SIZE \n \
+                column TOTAL_UTILIZADO_SIZE       format 999999999999999 \n \
+                SELECT  TRUNC(SUM((A.BYTES-B.BYTES))) TOTAL_UTILIZADO_SIZE \n \
                 FROM \n \
                 (   SELECT  x.TABLESPACE_NAME, SUM(x.BYTES) BYTES \n \
                         FROM    DBA_DATA_FILES x,DBA_TABLESPACES y \n \
@@ -41,23 +45,37 @@ class Monitoring:
             print 'Erro desconhecido ao executar a query:' + result
             exit(3)
         try:
-            self.growth_gather = float(result.strip(' '))
+            self.growth_gather = int(result.strip(' '))
             self.append_gather()
         except:
             print 'Impossivel tratar o valor da coleta'
             exit(3)
 
+
+    def disktime_asm(self):
+        """
+        Calcula o tempo de disco
+        caso seja um diskgroup ASM
+        :return:
+        """
+        try:
+            self.diskspace = Storage.asm_space(self.user, self.password, self.sid, self.asm)
+        except:
+            print 'UNKNOWN - Falha ao capturar o espaco em ASM'
+            exit(3)
+        if int(self.growth_avg > 0):
+            self.days_left = int(self.diskspace / int(self.growth_avg))
+        else:
+            self.days_left = int(self.diskspace / 1)
     def disktime_localdisk(self):
         """
         Calcula o tempo de disco em filesystem
-        :param args:
         :return:
         """
         disk_list = self.disklist(self.localdisk)
-        sum = 0
-        for disk in disk_list:
-            sum += GrowthUtils.get_free_space_mb(disk)
-        self.days_left = int(float(sum) / float(self.growth_avg))
+        sum = Storage.os_space_left(disk_list)
+        self.diskspace = int(sum)
+        self.days_left = int(self.diskspace / int(self.growth_avg))
 
     def disklist(self, diskstring):
         """
@@ -76,25 +94,25 @@ class Monitoring:
         i = 0
         variance = 0
         #todo Melhorar o metodo.Esta implementando media simples
-        if len(self.gather_list) >= 4:
-            aux_list = self.gather_list[-4:]
+        if len(self.gather_list) >= 7:
+            aux_list = self.gather_list[-7:]
         elif len(self.gather_list) == 1:
             self.growth_avg = 1
             return
         else:
             aux_list = self.gather_list
         #-1 para n falhar com numero impar
-        while i < len(aux_list)-1:
+        while i < len(aux_list) -1:
             value_0 = aux_list[i]['gather']
             value_1 = aux_list[i + 1]['gather']
-            variance += value_1 - value_0
-            i += 2
+            variance = value_1 - value_0 + variance
+            i += 1
         #total = statistics.mean(gather['gather'] for gather in aux_list)
         #evitar divisao por 0 no calc no days_left
         if variance == 0:
             self.growth_avg = 1
         else:
-            self.growth_avg = variance / len(aux_list)
+            self.growth_avg = int(variance / len(aux_list)-1)
 
 
     def append_gather(self):
@@ -102,7 +120,7 @@ class Monitoring:
         Adiciona uma nova coleta ao json
         :return:
         """
-        current_time = datetime.datetime.now().strftime("%Y%m%d%H%M")
+        current_time = datetime.datetime.now().strftime("%Y%m%d")
         g = {'gather': self.growth_gather,
              'date': current_time
         }
@@ -135,9 +153,8 @@ class Monitoring:
         self.gather_list = gather_list
 
     def exit_status(self):
-        perf_data = '| DAYS_LEFT=%s AVG_GROWTH=%s DATABASE_SIZE=%s' % (self.days_left,
-                                                                       self.growth_avg,
-                                                                       self.growth_gather)
+        perf_data = '| DAYS_LEFT=%s AVG_GROWTH=%s DATABASE_SIZE=%s DISK_SPACE=%s' % \
+                    (self.days_left,self.growth_avg,self.growth_gather,self.diskspace)
         if self.disktime:
             if self.days_left < 90:
                 print 'WARNING - Menos de tres meses de espaco! %s ' % perf_data
@@ -147,12 +164,7 @@ class Monitoring:
                 exit(0)
 
 
-def disktime_asm(args):
-    print 'calculate ASM disktime'
-
-
 def main(sid, user, password, disktime, asm=None, localdisk=None):
-    args = ''
     m = Monitoring(sid, user, password, disktime, asm, localdisk)
     # pe de macaco
     i = 0
@@ -169,7 +181,7 @@ def main(sid, user, password, disktime, asm=None, localdisk=None):
             print "Os parametros asm e localdisk nao podem ser utilizados juntos."
             exit(2)
         if asm != '':  #executando com ASM
-            disktime_asm(args)
+            m.disktime_asm()
         elif localdisk != '':  #executando com localdisk
             m.disktime_localdisk()
     m.exit_status()

@@ -26,7 +26,7 @@ class GrowthUtils:
         except:
             print 'UNKNOWN - Filesystem %s nao encontrado' % p
             exit(3)
-        return _st.f_bavail * _st.f_frsize/1024/1024
+        return _st.f_bavail * _st.f_frsize
 # def file_to_string(my_file):
 #     """
 #     Retorna uma string com o arquivo
@@ -70,7 +70,7 @@ class GrowthUtils:
     #     return False
 
 # Caso windows descomente essa função e comente a de baixo
-
+#
 # def get_free_space_mb(folder):
 #     """
 #         Return folder/drive free space (in bytes)
@@ -78,7 +78,7 @@ class GrowthUtils:
 #     if platform.system() == 'Windows':
 #         free_bytes = ctypes.c_ulonglong(0)
 #         ctypes.windll.kernel32.GetDiskFreeSpaceExW(ctypes.c_wchar_p(folder), None, None, ctypes.pointer(free_bytes))
-#         return free_bytes.value/1024/1024
+#         return free_bytes.value
 #     else:
 #         st = os.statvfs(folder)
 #         return st.f_bavail * st.f_frsize/1024/1024

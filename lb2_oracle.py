@@ -14,6 +14,7 @@ import json
 import os
 import sys
 import check_alert
+import check_archives
 import check_backup
 import check_dbgrowth
 import check_ora_tps
@@ -92,6 +93,11 @@ class Database:
             check_dbgrowth.main(self.sid, self.user, self.password,
                                 self.module['disktime'], self.module['asm'],
                                 self.module['localdisk'])
+        elif self.module['name'] == 'archives':
+            check_archives.main(self.sid, self.user, self.password,
+                                self.module['warning'], self.module['critical'],
+                                self.module['asm'], self.module['localdisk'])
+
 
 def main(argv):
     db, m = parse_args(argv)
@@ -107,12 +113,19 @@ def parse_args(argv):
     :return: Tupla com os dois argumentos
     """
     global db_name, module
-    if len(argv) != 2:
-        print "Usage: ./lb2_oracle dbname module"
-        exit(3)
-    else:
+    if len(argv) == 2:
         db_name = argv[0]
         module = argv[1]
+    # Esse pequeno artificio tem uma unica utilidade
+    # o NRDS nao permite varios parametros separados
+    # por espaco. Portanto adicionamos "-p" para
+    # o NRDS tratar os proximos parametros
+    elif len(argv) == 3 and argv[0] == '-p':
+        db_name = argv[1]
+        module = argv[2]
+    else:
+        print "Usage: ./lb2_oracle dbname module"
+        exit(3)
     return db_name, module
 
 

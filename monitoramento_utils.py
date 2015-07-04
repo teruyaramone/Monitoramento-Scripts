@@ -1,4 +1,4 @@
-#!/usr/bin/python
+# !/usr/bin/python
 # coding=utf-8
 # -------------------------------------------------------------
 #       LB2 Monitoramento - Classe de utilitarios
@@ -18,8 +18,8 @@ import sys
 
 __author__ = 'bernardovale'
 
-class Utils:
 
+class Utils:
     def __init__(self):
         pass
 
@@ -35,6 +35,17 @@ class Utils:
         return x(path)
 
     @staticmethod
+    def file_exists_not_empty(path):
+        """
+        Garante que o arquivo existe no SO
+        e tambem nao esteja vazio
+        :param path: Path do arquivo
+        :return: Afirmação
+        """
+        x = lambda y: True if os.path.isfile(y) and os.access(y, os.R_OK) and os.stat(y).st_size != 0 else False
+        return x(path)
+
+    @staticmethod
     def run_sqlplus(pwd, user, sid, query, pretty, is_sysdba):
         """
         Executa um comando via sqlplus
@@ -44,11 +55,11 @@ class Utils:
         :param Usuário é sysdba?
         :return: stdout do sqlplus
         """
-        credencias = user +'/'+ pwd+'@'+sid
+        credencias = user + '/' + pwd + '@' + sid
         if is_sysdba:
             credencias += ' as sysdba'
-        session = subprocess.Popen(['sqlplus','-S',credencias], stdin=subprocess.PIPE,
-        stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        session = subprocess.Popen(['sqlplus', '-S', credencias], stdin=subprocess.PIPE,
+                                   stdout=subprocess.PIPE, stderr=subprocess.PIPE)
         session.stdin.write(query)
         stdout, stderr = session.communicate()
         if pretty:
@@ -60,6 +71,7 @@ class Utils:
             exit(2)
         else:
             return stdout
+
     @staticmethod
     def read_json(path):
         """
@@ -80,4 +92,4 @@ class Utils:
 
     @staticmethod
     def fullpath(file):
-        return "%s/%s" % (os.path.dirname(sys.argv[0]),file)
+        return "%s/%s" % (os.path.dirname(sys.argv[0]), file)

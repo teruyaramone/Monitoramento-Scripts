@@ -1,8 +1,6 @@
 {
     "warning" : [
-        "ORA-04",
-        "ORA-",
-        "ORA-01555"
+        "ORA-04"
     ],
     "critical" : [
         "ORA-00257",
