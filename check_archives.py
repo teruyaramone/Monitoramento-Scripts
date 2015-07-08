@@ -95,7 +95,7 @@ class Monitoring:
         """
         query = "set head off \n \
                 set feedback off \n \
-                select trunc(count(*)/4) avg_archives from v$log_history \n \
+                select decode(trunc(count(*)/4),0,1,trunc(count(*)/4)) avg_archives from v$log_history \n \
                 where trunc(first_time,'HH24') <= trunc(sysdate,'HH24') \n \
                 and trunc(first_time,'HH24') >= trunc(sysdate,'HH24') - 3/24;"
         self.avg_archives = Db.single_int_query(self.user, self.password, self.sid, query)
