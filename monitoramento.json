@@ -1,9 +1,9 @@
 {
     "databases" : [
         {
-            "sid": "rju",
+            "sid": "dbsistel",
             "user": "system",
-            "password": "oracleAIX",
+            "password": "pulga",
             "modules" : [
                 {
                     "name" : "alertlog",
@@ -35,8 +35,8 @@
                 },
                 {
                     "name" : "archives",
-                    "localdisk" : "",
-                    "asm" : "DATA",
+                    "localdisk" : "/",
+                    "asm" : "",
                     "warning" : 168,
                     "critical" : 24
                 },
