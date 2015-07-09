@@ -1,13 +1,13 @@
 {
     "databases" : [
         {
-            "sid": "rju",
+            "sid": "dbsistel",
             "user": "system",
-            "password": "oracleAIX",
+            "password": "pulga",
             "modules" : [
                 {
                     "name" : "alertlog",
-                    "logfile" : "/Users/bernardovale/PycharmProjects/Monitoramento Scripts/alert_DBFAT.log",
+                    "logfile" : "/Users/bernardovale/PycharmProjects/Monitoramento Scripts/alertlog.log",
                     "clear_time" : 60,
                     "config" : "/Users/bernardovale/PycharmProjects/Monitoramento Scripts/alertlog.json"
                 },
@@ -35,8 +35,8 @@
                 },
                 {
                     "name" : "archives",
-                    "localdisk" : "",
-                    "asm" : "DATA",
+                    "localdisk" : "/",
+                    "asm" : "",
                     "warning" : 168,
                     "critical" : 24
                 },

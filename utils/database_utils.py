@@ -23,7 +23,11 @@ class Db:
             print 'Erro desconhecido ao executar a query:' + result
             exit(3)
         try:
-            r = int(result.replace(',','').replace('.','').strip(' '))
+            r_aux = result.strip(' ').replace(',', '.')
+            if '.' in r_aux:
+                r = int(round(float(r_aux)))
+            else:
+                r = int(r_aux)
         except:
             print 'Impossivel tratar o resultado da query: %s' % result
             exit(3)
