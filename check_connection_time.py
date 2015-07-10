@@ -12,7 +12,7 @@ def main(sid, user, pwd, warning, critical):
     result = ''
     query = "select 1.0 valor from dual;"
     inicio = datetime.datetime.now()
-    time.sleep(11)
+    #time.sleep(11)
     Db.single_int_query(user, pwd, sid, query)
 
     fim = datetime.datetime.now()
